@@ -57,8 +57,23 @@ def makeGrid():
             
             
 makeGrid()
+
+def chooseWallKnock(dir, cell):
+    if dir == "north":
+        pygame.draw.line(win, (255,255,255), (cell.x, cell.y), (cell.x + SIZE, cell.y) ) 
+    elif dir == "south":
+        pygame.draw.line(win, (255,255,255), (cell.x, cell.y + SIZE), (cell.x + SIZE, cell.y + SIZE) )
+    elif dir == "west":
+        pygame.draw.line(win, (255,255,255), (cell.x, cell.y), (cell.x, cell.y + SIZE) )
+    elif dir == "east": 
+        pygame.draw.line(win, (255,255,255), (cell.x + SIZE, cell.y), (cell.x + SIZE, cell.y + SIZE))
+
+
+# debug grid cords
 for i in range(0, len(grid)):
     print(grid[i].x, grid[i].y)            
+
+
 
 while run:
 
