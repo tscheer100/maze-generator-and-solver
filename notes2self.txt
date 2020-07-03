@@ -12,4 +12,34 @@ so maybe
             east_edge.append(grid[k])
         elif k >= ((SIZE*SIZE) - (SIZE + 1)) and k <= (SIZE * SIZE)
             south_edge.append(grid[k])
+[completed]
 
+
+
+we need to mark the current cell as visited.
+afterward, while the current cell has any unvisited neighbors
+    choose one of the unvisited neighbors
+    remove the wall between the unvisited cell and the current cell
+    invoke recursively
+
+so
+
+current_cell = grid[1]
+
+def chooseNeighbor():
+    unvisited = []
+    if grid[current_cell].top_row == False:
+        if grid[current_cell - GRID_SIZE].visited == False:
+            unvisited.append(grid[current_cell - GRID_SIZE])
+    
+    if grid[current_cell].left_row == False:
+        if grid[current_cell - 1].visited == False:
+            unvisited.append(grid[current_cell - 1])
+
+    if grid[current_cell].right_row == False:
+        if grid[current_cell + 1].visited == False:
+            unvisited.append(grid[current_cell - 1])
+
+    if grid[current_cell].bottom_row == False:
+        if grid[current_cell + SIZE].visited == False:
+            unvisited.append(grid[current_cell + GRID_SIZE])

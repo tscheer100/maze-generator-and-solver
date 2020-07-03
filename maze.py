@@ -36,8 +36,6 @@ class cell(object):
         self.left_edge = False
         self.bottom_edge = False
 
-
-
 def drawGrid():
     for row in range(1, GRID_SIZE + 1):
         for col in range(1, GRID_SIZE + 1):
@@ -59,7 +57,10 @@ def makeGrid():
 makeGrid()
 
 def addEdgeCells():
+
     for k in range(0,len(grid)):
+
+
         if k >= 0 and k < 10:
             grid[k].top_edge = True
         elif k % 10 == 9:
@@ -68,6 +69,12 @@ def addEdgeCells():
             grid[k].left_edge = True
         elif k >= ((GRID_SIZE * GRID_SIZE) -(GRID_SIZE) + 1) and k <= (GRID_SIZE * GRID_SIZE):
             grid[k].bottom_edge = True
+
+        # check for zero because, for the left edge, k % 10 is not valid
+        if k == 0:
+            grid[k].left_edge = True
+
+
 
 addEdgeCells()
 
@@ -83,6 +90,45 @@ def chooseWallKnock(dir, cell):
         pygame.draw.line(win, (255,255,255), (cell.x + SIZE, cell.y), (cell.x + SIZE, cell.y + SIZE))
 
 
+current_cell = 99
+
+def addNeighbor():
+    unvisited = []
+    if grid[current_cell].top_edge == False:
+        if grid[current_cell - GRID_SIZE].visited == False:
+            unvisited.append(current_cell - GRID_SIZE)
+    
+    if grid[current_cell].left_edge == False:
+        if grid[current_cell - 1].visited == False:
+            unvisited.append(current_cell - 1)
+
+    if grid[current_cell].right_edge == False:
+        if grid[current_cell + 1].visited == False:
+            unvisited.append(current_cell + 1)
+
+    if current_cell + SIZE < len(grid):
+        if grid[current_cell].bottom_edge == False:
+            if grid[current_cell + SIZE].visited == False:
+                unvisited.append(current_cell + GRID_SIZE)
+    # debug
+    # print(unvisited)
+addNeighbor()
+
+
+
+while run:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+
+
+    redrawGameWin()
+
+
+
+pygame.quit
+
 
 
 # Debug edge cells
@@ -97,15 +143,4 @@ def chooseWallKnock(dir, cell):
 
 # Debug grid cords
 # for i in range(0, len(grid)):
-#     print(grid[i].x, grid[i].y)            
-
-cell_select = random.choice(grid)
-
-while run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
-    redrawGameWin()
-
-pygame.quit
+#     print(grid[i].x, grid[i].y)      
