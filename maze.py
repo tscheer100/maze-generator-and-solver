@@ -55,8 +55,6 @@ def makeGrid():
         for c in range(1, GRID_SIZE + 1):
             grid.append(cell(c * SIZE, r * SIZE))          
 makeGrid()
-# debug 
-
 
 def addEdgeCells():
 
@@ -64,7 +62,7 @@ def addEdgeCells():
 
         if k >= 0 and k < 10:
             grid[k].top_edge = True
-        elif k % 10 == 9:
+        elif k % 8 == 1:
             grid[k].right_edge = True
         elif k % 10 == 0:
             grid[k].left_edge = True
@@ -76,6 +74,7 @@ def addEdgeCells():
             grid[k].left_edge = True
 
 addEdgeCells()
+
 
 
 def wallKnock(dir, cell):
@@ -110,6 +109,7 @@ def getNeighbors(current_cell):
     
     # debug
     # print("nextdoor" + str(nextdoor))
+
     return [c for c in nextdoor if c not in visited]
 
 def knockNeighbor(current_cell):
@@ -146,8 +146,8 @@ def knockNeighbor(current_cell):
 # print(current_cell)
 
 # Debug edge cells
-# for l in range(0,(len(grid))):
-#     print(str(l) + " top edge " + str(grid[l].top_edge) + " right edge " + str(grid[l].right_edge) + " left edge " + str(grid[l].left_edge) + " bottom edge " + str(grid[l].bottom_edge) ) 
+for l in range(0,(len(grid))):
+    print(str(l) + " top edge " + str(grid[l].top_edge) + " right edge " + str(grid[l].right_edge) + " left edge " + str(grid[l].left_edge) + " bottom edge " + str(grid[l].bottom_edge) ) 
 
 # Debug wall knockdown
 # chooseWallKnock("north", grid[14])
