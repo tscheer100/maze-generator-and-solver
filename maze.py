@@ -9,6 +9,10 @@ FPS = 60
 SIZE = 40
 GRID_SIZE = 10
 
+grid = []
+visited = []
+visited_stack = []
+
 pygame.init()
 pygame.mixer.init()
 
@@ -28,7 +32,6 @@ def redrawGameWin():
 
 class cell(object):
     def __init__(self, x, y): 
-        self.visited = False
         self.x = x
         self.y = y
         self.top_edge = False
@@ -47,19 +50,17 @@ def drawGrid():
     pygame.draw.line(win, (0,0,0), (SIZE, SIZE * GRID_SIZE + SIZE), (SIZE * GRID_SIZE + SIZE, SIZE * GRID_SIZE + SIZE))  
 drawGrid()
 
-grid = []
-
 def makeGrid():
     for r in range(1, GRID_SIZE + 1):
         for c in range(1, GRID_SIZE + 1):
-            grid.append(cell(r * SIZE, c * SIZE))
-                     
+            grid.append(cell(c * SIZE, r * SIZE))          
 makeGrid()
+# debug 
+
 
 def addEdgeCells():
 
     for k in range(0,len(grid)):
-
 
         if k >= 0 and k < 10:
             grid[k].top_edge = True
@@ -67,19 +68,17 @@ def addEdgeCells():
             grid[k].right_edge = True
         elif k % 10 == 0:
             grid[k].left_edge = True
-        elif k >= ((GRID_SIZE * GRID_SIZE) -(GRID_SIZE) + 1) and k <= (GRID_SIZE * GRID_SIZE):
+        elif k >= ((GRID_SIZE * GRID_SIZE) - (GRID_SIZE) + 1) and k <= (GRID_SIZE * GRID_SIZE):
             grid[k].bottom_edge = True
 
         # check for zero because, for the left edge, k % 10 is not valid
         if k == 0:
             grid[k].left_edge = True
 
-
-
 addEdgeCells()
 
 
-def chooseWallKnock(dir, cell):
+def wallKnock(dir, cell):
     if dir == "north":
         pygame.draw.line(win, (255,255,255), (cell.x, cell.y), (cell.x + SIZE, cell.y) ) 
     elif dir == "south":
@@ -90,46 +89,61 @@ def chooseWallKnock(dir, cell):
         pygame.draw.line(win, (255,255,255), (cell.x + SIZE, cell.y), (cell.x + SIZE, cell.y + SIZE))
 
 
-current_cell = 99
-
-def addNeighbor():
-    unvisited = []
+def getNeighbors(current_cell):
+    nextdoor = []
     if grid[current_cell].top_edge == False:
-        if grid[current_cell - GRID_SIZE].visited == False:
-            unvisited.append(current_cell - GRID_SIZE)
+        if not grid[current_cell - GRID_SIZE] in visited:
+            nextdoor.append(current_cell - GRID_SIZE)
     
     if grid[current_cell].left_edge == False:
-        if grid[current_cell - 1].visited == False:
-            unvisited.append(current_cell - 1)
+        if not grid[current_cell - 1] in visited:
+            nextdoor.append(current_cell - 1)
 
     if grid[current_cell].right_edge == False:
-        if grid[current_cell + 1].visited == False:
-            unvisited.append(current_cell + 1)
+        if not grid[current_cell + 1] in visited:
+            nextdoor.append(current_cell + 1)
 
-    if current_cell + SIZE < len(grid):
+    if current_cell + GRID_SIZE < len(grid):
         if grid[current_cell].bottom_edge == False:
-            if grid[current_cell + SIZE].visited == False:
-                unvisited.append(current_cell + GRID_SIZE)
+            if not grid[current_cell + GRID_SIZE] in visited:
+                nextdoor.append(current_cell + GRID_SIZE)
+    
     # debug
-    # print(unvisited)
-addNeighbor()
+    # print("nextdoor" + str(nextdoor))
+    return [c for c in nextdoor if c not in visited]
 
+def knockNeighbor(current_cell):
+    neighbors = getNeighbors(current_cell)
+    visited.append(current_cell)
 
+    dir = ""
+    
+    if not neighbors:
+        backtrack_to_cell = visited_stack.pop() if visited_stack else None
+        print("no neighbours. pop visited", backtrack_to_cell)
+        return backtrack_to_cell
 
-while run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+    visited_stack.append(current_cell)
+    choice = random.choice(neighbors)
 
+    if choice == current_cell - GRID_SIZE:
+        dir = "north"
+    elif choice == current_cell - 1:
+        dir = "west"
+    elif choice == current_cell + 1:
+        dir = "east"
+    elif choice == current_cell + GRID_SIZE:
+        dir = "south"
+    else:
+        print("error in knockNeighbor() during dir selection")
+    wallKnock(dir, grid[current_cell])
+    current_cell = choice
+    # print("choice " + str(choice))
+    # print(visited)
+    return current_cell
 
-
-    redrawGameWin()
-
-
-
-pygame.quit
-
-
+# debug
+# print(current_cell)
 
 # Debug edge cells
 # for l in range(0,(len(grid))):
@@ -143,4 +157,23 @@ pygame.quit
 
 # Debug grid cords
 # for i in range(0, len(grid)):
-#     print(grid[i].x, grid[i].y)      
+#     print(grid[i].x, grid[i].y) 
+
+current_cell = 0
+backtracked = False
+
+while run:
+    time.sleep(.1)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    # print(visited_stack)
+    current_cell = knockNeighbor(current_cell)
+    if not current_cell:
+        break
+    
+    redrawGameWin()
+
+
+pygame.quit

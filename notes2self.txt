@@ -38,8 +38,29 @@ def chooseNeighbor():
 
     if grid[current_cell].right_row == False:
         if grid[current_cell + 1].visited == False:
-            unvisited.append(grid[current_cell - 1])
+            unvisited.append(grid[current_cell + 1])
 
     if grid[current_cell].bottom_row == False:
         if grid[current_cell + SIZE].visited == False:
             unvisited.append(grid[current_cell + GRID_SIZE])
+
+we need to choose random unvisited neighbor wall to knowck down. so with our previous method, something like...
+
+def knockNeighbor():
+    randList = neighbor()
+    choice = random.choicee(randList)
+    dir = ""
+    if choice == current_cell - GRID_SIZE:
+        dir = "north"
+    elif choice == current_cell - 1:
+        dir = "west"
+    elif choice == current_cell + 1:
+        dir = "east"
+    elif choice == current_cell _ GRID_SIZE:
+        dir = "south"
+    else:
+        print("error in knockNeighbor() during dir selection")
+    
+    wallKnock(dir)
+    current_cell = choice
+
