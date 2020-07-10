@@ -3,11 +3,11 @@ import time
 
 import pygame
 
-WIDTH = 500
-HEIGHT = 500
+WIDTH = 1000
+HEIGHT = 1000
 FPS = 60
-SIZE = 40
-GRID_SIZE = 10
+SIZE = 30
+GRID_SIZE = 20
 THICC = 10
 
 grid = []
@@ -62,9 +62,9 @@ def addEdgeCells():
 
         if k >= 0 and k < 10:
             grid[k].top_edge = True
-        elif k % 10 == 9:
+        elif k % GRID_SIZE == GRID_SIZE-1:
             grid[k].right_edge = True
-        elif k % 10 == 0:
+        elif k % GRID_SIZE == 0:
             grid[k].left_edge = True
         elif k >= ((GRID_SIZE * GRID_SIZE) - (GRID_SIZE) + 1) and k <= (GRID_SIZE * GRID_SIZE):
             grid[k].bottom_edge = True
@@ -73,8 +73,7 @@ def addEdgeCells():
         if k == 0:
             grid[k].left_edge = True
         # same idea with 9 
-        if len(grid) >= 9: 
-            grid[9].right_edge = True
+        grid[SIZE-1].right_edge = True
 
 addEdgeCells()
 
@@ -169,7 +168,7 @@ current_cell = 0
 backtracked = False
 
 while run:
-    time.sleep(.1)
+    time.sleep(.05)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -180,6 +179,5 @@ while run:
         break
     
     redrawGameWin()
-
 
 pygame.quit
