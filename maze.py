@@ -8,12 +8,12 @@ HEIGHT = 500
 FPS = 60
 SIZE = 40
 GRID_SIZE = 10
+THICC = 10
 
 grid = []
 visited = []
 visited_stack = []
 
-pygame.init()
 pygame.mixer.init()
 
 win = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -42,12 +42,12 @@ class cell(object):
 def drawGrid():
     for row in range(1, GRID_SIZE + 1):
         for col in range(1, GRID_SIZE + 1):
-            pygame.draw.line(win, (0,0,0), (row * SIZE, col * SIZE), (row * SIZE + SIZE, col * SIZE))
-            pygame.draw.line(win, (0,0,0), (row * SIZE, col * SIZE + SIZE), (row * SIZE, col * SIZE)) 
+            pygame.draw.line(win, (0,0,0), (row * SIZE, col * SIZE), (row * SIZE + SIZE, col * SIZE), THICC)
+            pygame.draw.line(win, (0,0,0), (row * SIZE, col * SIZE + SIZE), (row * SIZE, col * SIZE), THICC) 
 
     # finishing lines that the for loop didn't catch.        
-    pygame.draw.line(win, (0,0,0), (SIZE * GRID_SIZE + SIZE, SIZE), (SIZE * GRID_SIZE + SIZE, SIZE * GRID_SIZE + SIZE))
-    pygame.draw.line(win, (0,0,0), (SIZE, SIZE * GRID_SIZE + SIZE), (SIZE * GRID_SIZE + SIZE, SIZE * GRID_SIZE + SIZE))  
+    pygame.draw.line(win, (0,0,0), (SIZE * GRID_SIZE + SIZE, SIZE), (SIZE * GRID_SIZE + SIZE, SIZE * GRID_SIZE + SIZE), THICC)
+    pygame.draw.line(win, (0,0,0), (SIZE, SIZE * GRID_SIZE + SIZE), (SIZE * GRID_SIZE + SIZE, SIZE * GRID_SIZE + SIZE), THICC)  
 drawGrid()
 
 def makeGrid():
@@ -62,7 +62,7 @@ def addEdgeCells():
 
         if k >= 0 and k < 10:
             grid[k].top_edge = True
-        elif k % 8 == 1:
+        elif k % 10 == 9:
             grid[k].right_edge = True
         elif k % 10 == 0:
             grid[k].left_edge = True
@@ -72,6 +72,9 @@ def addEdgeCells():
         # check for zero because, for the left edge, k % 10 is not valid
         if k == 0:
             grid[k].left_edge = True
+        # same idea with 9 
+        if len(grid) >= 9: 
+            grid[9].right_edge = True
 
 addEdgeCells()
 
@@ -79,28 +82,31 @@ addEdgeCells()
 
 def wallKnock(dir, cell):
     if dir == "north":
-        pygame.draw.line(win, (255,255,255), (cell.x, cell.y), (cell.x + SIZE, cell.y) ) 
+        pygame.draw.line(win, (255,255,255), (cell.x + (THICC/2+ 1) , cell.y), (cell.x + SIZE - (THICC/2), cell.y), THICC) 
     elif dir == "south":
-        pygame.draw.line(win, (255,255,255), (cell.x, cell.y + SIZE), (cell.x + SIZE, cell.y + SIZE) )
+        pygame.draw.line(win, (255,255,255), (cell.x + (THICC/2 + 1) , cell.y + SIZE), (cell.x - (THICC/2) + SIZE, cell.y + SIZE), THICC)
     elif dir == "west":
-        pygame.draw.line(win, (255,255,255), (cell.x, cell.y), (cell.x, cell.y + SIZE) )
+        pygame.draw.line(win, (255,255,255), (cell.x, cell.y + (THICC/2 + 1)), (cell.x, cell.y + SIZE - (THICC/2)), THICC)
     elif dir == "east": 
-        pygame.draw.line(win, (255,255,255), (cell.x + SIZE, cell.y), (cell.x + SIZE, cell.y + SIZE))
+        pygame.draw.line(win, (255,255,255), (cell.x + SIZE, cell.y + (THICC/2 + 1)), (cell.x + SIZE, cell.y + SIZE - (THICC/2)), THICC)
 
 
 def getNeighbors(current_cell):
     nextdoor = []
-    if grid[current_cell].top_edge == False:
-        if not grid[current_cell - GRID_SIZE] in visited:
-            nextdoor.append(current_cell - GRID_SIZE)
-    
-    if grid[current_cell].left_edge == False:
-        if not grid[current_cell - 1] in visited:
-            nextdoor.append(current_cell - 1)
+    if current_cell - GRID_SIZE >= 0:
+        if grid[current_cell].top_edge == False:
+            if not grid[current_cell - GRID_SIZE] in visited:
+                nextdoor.append(current_cell - GRID_SIZE)
 
-    if grid[current_cell].right_edge == False:
-        if not grid[current_cell + 1] in visited:
-            nextdoor.append(current_cell + 1)
+    if current_cell - 1 >= 0:
+        if grid[current_cell].left_edge == False:
+            if not grid[current_cell - 1] in visited:
+                nextdoor.append(current_cell - 1)
+
+    if current_cell + 1 < len(grid):
+        if grid[current_cell].right_edge == False:
+            if not grid[current_cell + 1] in visited:
+                nextdoor.append(current_cell + 1)
 
     if current_cell + GRID_SIZE < len(grid):
         if grid[current_cell].bottom_edge == False:
