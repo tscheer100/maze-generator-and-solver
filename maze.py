@@ -3,16 +3,18 @@ import time
 
 import pygame
 
-WIDTH = 1000
-HEIGHT = 1000
+WIDTH = 850
+HEIGHT = 850
 FPS = 60
 SIZE = 30
-GRID_SIZE = 20
+GRID_SIZE = 25
 THICC = 10
 
 grid = []
 visited = []
 visited_stack = []
+
+prev_cell = 0
 
 pygame.mixer.init()
 
@@ -164,8 +166,17 @@ for l in range(0,(len(grid))):
 # for i in range(0, len(grid)):
 #     print(grid[i].x, grid[i].y) 
 
+
+
 current_cell = 0
 backtracked = False
+
+def colorChecking():
+    for vis in range(0,len(grid)):
+        if vis in visited:   
+            pygame.draw.rect(win, (255,255,255), (grid[vis].x + (THICC/2 + 1), grid[vis].y + (THICC/2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
+    
+    pygame.draw.rect(win, (255,0,0), (grid[current_cell].x + (THICC/2 + 1), grid[current_cell].y + (THICC/2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
 
 while run:
     time.sleep(.05)
@@ -177,7 +188,7 @@ while run:
     current_cell = knockNeighbor(current_cell)
     if not current_cell:
         break
-    
+    colorChecking()
     redrawGameWin()
 
 pygame.quit
