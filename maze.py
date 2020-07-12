@@ -7,7 +7,7 @@ WIDTH = 850
 HEIGHT = 850
 FPS = 60
 SIZE = 30
-GRID_SIZE = 15
+GRID_SIZE = 25
 THICC = 10
 
 grid = []
