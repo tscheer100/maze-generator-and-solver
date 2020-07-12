@@ -7,7 +7,7 @@ WIDTH = 850
 HEIGHT = 850
 FPS = 60
 SIZE = 30
-GRID_SIZE = 25
+GRID_SIZE = 15
 THICC = 10
 
 grid = []
@@ -24,6 +24,7 @@ pygame.display.set_caption("Maze")
 clock = pygame.time.Clock()
 
 run = True
+run_alg = True
 
 win.fill((255,255,255))
 
@@ -153,8 +154,8 @@ def knockNeighbor(current_cell):
 # print(current_cell)
 
 # Debug edge cells
-for l in range(0,(len(grid))):
-    print(str(l) + " top edge " + str(grid[l].top_edge) + " right edge " + str(grid[l].right_edge) + " left edge " + str(grid[l].left_edge) + " bottom edge " + str(grid[l].bottom_edge) ) 
+# for l in range(0,(len(grid))):
+#     print(str(l) + " top edge " + str(grid[l].top_edge) + " right edge " + str(grid[l].right_edge) + " left edge " + str(grid[l].left_edge) + " bottom edge " + str(grid[l].bottom_edge) ) 
 
 # Debug wall knockdown
 # chooseWallKnock("north", grid[14])
@@ -185,9 +186,13 @@ while run:
             run = False
 
     # print(visited_stack)
-    current_cell = knockNeighbor(current_cell)
+    if run_alg:
+        current_cell = knockNeighbor(current_cell)
     if not current_cell:
-        break
+        run_alg = False
+
+
+
     colorChecking()
     redrawGameWin()
 
