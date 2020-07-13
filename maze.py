@@ -3,16 +3,17 @@ import time
 
 import pygame
 
+
 WIDTH = 850
 HEIGHT = 850
 FPS = 60
-SIZE = 30
-GRID_SIZE = 25
-THICC = 10
+SIZE = 10 
+GRID_SIZE = 80
+THICC = 1
 
 grid = []
-visited = []
 visited_stack = []
+visited = set()
 
 prev_cell = 0
 
@@ -122,13 +123,12 @@ def getNeighbors(current_cell):
 
 def knockNeighbor(current_cell):
     neighbors = getNeighbors(current_cell)
-    visited.append(current_cell)
+    visited.add(current_cell)
 
     dir = ""
     
     if not neighbors:
         backtrack_to_cell = visited_stack.pop() if visited_stack else None
-        print("no neighbours. pop visited", backtrack_to_cell)
         return backtrack_to_cell
 
     visited_stack.append(current_cell)
@@ -172,6 +172,7 @@ def knockNeighbor(current_cell):
 current_cell = 0
 backtracked = False
 
+
 def colorChecking():
     for vis in range(0,len(grid)):
         if vis in visited:   
@@ -180,7 +181,6 @@ def colorChecking():
     pygame.draw.rect(win, (255,0,0), (grid[current_cell].x + (THICC/2 + 1), grid[current_cell].y + (THICC/2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
 
 while run:
-    time.sleep(.05)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
