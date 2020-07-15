@@ -7,9 +7,9 @@ import pygame
 WIDTH = 850
 HEIGHT = 850
 FPS = 60
-SIZE = 10 
-GRID_SIZE = 80
-THICC = 1
+SIZE = 25
+GRID_SIZE = 25
+THICC = 10
 
 grid = []
 visited_stack = []
@@ -24,7 +24,7 @@ pygame.display.set_caption("Maze")
 
 clock = pygame.time.Clock()
 
-run = True
+run_gen = True
 run_alg = True
 
 win.fill((255,255,255))
@@ -85,13 +85,13 @@ addEdgeCells()
 
 def wallKnock(dir, cell):
     if dir == "north":
-        pygame.draw.line(win, (255,255,255), (cell.x + (THICC/2+ 1) , cell.y), (cell.x + SIZE - (THICC/2), cell.y), THICC) 
+        pygame.draw.line(win, (255,255,255), (cell.x + (THICC//2+ 1) , cell.y), (cell.x + SIZE - (THICC//2), cell.y), THICC) 
     elif dir == "south":
-        pygame.draw.line(win, (255,255,255), (cell.x + (THICC/2 + 1) , cell.y + SIZE), (cell.x - (THICC/2) + SIZE, cell.y + SIZE), THICC)
+        pygame.draw.line(win, (255,255,255), (cell.x + (THICC//2 + 1) , cell.y + SIZE), (cell.x - (THICC//2) + SIZE, cell.y + SIZE), THICC)
     elif dir == "west":
-        pygame.draw.line(win, (255,255,255), (cell.x, cell.y + (THICC/2 + 1)), (cell.x, cell.y + SIZE - (THICC/2)), THICC)
+        pygame.draw.line(win, (255,255,255), (cell.x, cell.y + (THICC//2 + 1)), (cell.x, cell.y + SIZE - (THICC//2)), THICC)
     elif dir == "east": 
-        pygame.draw.line(win, (255,255,255), (cell.x + SIZE, cell.y + (THICC/2 + 1)), (cell.x + SIZE, cell.y + SIZE - (THICC/2)), THICC)
+        pygame.draw.line(win, (255,255,255), (cell.x + SIZE, cell.y + (THICC//2 + 1)), (cell.x + SIZE, cell.y + SIZE - (THICC//2)), THICC)
 
 
 def getNeighbors(current_cell):
@@ -176,14 +176,14 @@ backtracked = False
 def colorChecking():
     for vis in range(0,len(grid)):
         if vis in visited:   
-            pygame.draw.rect(win, (255,255,255), (grid[vis].x + (THICC/2 + 1), grid[vis].y + (THICC/2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
+            pygame.draw.rect(win, (255,255,255), (grid[vis].x + (THICC//2 + 1), grid[vis].y + (THICC//2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
     
-    pygame.draw.rect(win, (255,0,0), (grid[current_cell].x + (THICC/2 + 1), grid[current_cell].y + (THICC/2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
+    pygame.draw.rect(win, (255,0,0), (grid[current_cell].x + (THICC//2 + 1), grid[current_cell].y + (THICC//2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
 
-while run:
+while run_gen:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            run_gen = False
 
     # print(visited_stack)
     if run_alg:
