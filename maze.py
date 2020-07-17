@@ -3,13 +3,13 @@ import time
 
 import pygame
 
-WIDTH = 400
-HEIGHT = 400
+WIDTH = 850
+HEIGHT = 850
 FPS = 60
 SIZE = 25
-GRID_SIZE = 10
+GRID_SIZE = 25
 THICC = 10
-DELAY = 0.1 # in seconds
+DELAY = 0.01 # in seconds
 
 grid = []
 solve = []
