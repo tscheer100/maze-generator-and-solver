@@ -3,33 +3,28 @@ import time
 
 import pygame
 
-
 WIDTH = 850
 HEIGHT = 850
 FPS = 60
 SIZE = 25
 GRID_SIZE = 25
 THICC = 10
+DELAY = 0.01 # in seconds
 
 grid = []
+solve = []
 visited_stack = []
 visited = set()
-
-prev_cell = 0
-
-pygame.mixer.init()
 
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Maze")
 
-clock = pygame.time.Clock()
-
 run_gen = True
 run_alg = True
+run_solve = True
+solved = False
 
 win.fill((255,255,255))
-
-dir_choice = ["north", "west", "east", "south"]
 
 def redrawGameWin():
     pygame.display.update()
@@ -51,7 +46,12 @@ def drawGrid():
 
     # finishing lines that the for loop didn't catch.        
     pygame.draw.line(win, (0,0,0), (SIZE * GRID_SIZE + SIZE, SIZE), (SIZE * GRID_SIZE + SIZE, SIZE * GRID_SIZE + SIZE), THICC)
-    pygame.draw.line(win, (0,0,0), (SIZE, SIZE * GRID_SIZE + SIZE), (SIZE * GRID_SIZE + SIZE, SIZE * GRID_SIZE + SIZE), THICC)  
+    pygame.draw.line(win, (0,0,0), (SIZE, SIZE * GRID_SIZE + SIZE), (SIZE * GRID_SIZE + SIZE, SIZE * GRID_SIZE + SIZE), THICC) 
+
+    # Make opening
+    pygame.draw.line(win, (255,255,255), (SIZE, SIZE), (SIZE, SIZE+ SIZE - (THICC//2)), THICC)
+    # Make exit
+    pygame.draw.line(win, (255,255,255), ((GRID_SIZE * SIZE) + SIZE, (GRID_SIZE * SIZE)), ((GRID_SIZE * SIZE) + SIZE, (GRID_SIZE * SIZE) + GRID_SIZE + THICC), THICC)
 drawGrid()
 
 def makeGrid():
@@ -78,10 +78,7 @@ def addEdgeCells():
             grid[k].left_edge = True
         # same idea with 9 
         grid[SIZE-1].right_edge = True
-
 addEdgeCells()
-
-
 
 def wallKnock(dir, cell):
     if dir == "north":
@@ -92,7 +89,6 @@ def wallKnock(dir, cell):
         pygame.draw.line(win, (255,255,255), (cell.x, cell.y + (THICC//2 + 1)), (cell.x, cell.y + SIZE - (THICC//2)), THICC)
     elif dir == "east": 
         pygame.draw.line(win, (255,255,255), (cell.x + SIZE, cell.y + (THICC//2 + 1)), (cell.x + SIZE, cell.y + SIZE - (THICC//2)), THICC)
-
 
 def getNeighbors(current_cell):
     nextdoor = []
@@ -116,9 +112,6 @@ def getNeighbors(current_cell):
             if not grid[current_cell + GRID_SIZE] in visited:
                 nextdoor.append(current_cell + GRID_SIZE)
     
-    # debug
-    # print("nextdoor" + str(nextdoor))
-
     return [c for c in nextdoor if c not in visited]
 
 def knockNeighbor(current_cell):
@@ -146,32 +139,10 @@ def knockNeighbor(current_cell):
         print("error in knockNeighbor() during dir selection")
     wallKnock(dir, grid[current_cell])
     current_cell = choice
-    # print("choice " + str(choice))
-    # print(visited)
     return current_cell
-
-# debug
-# print(current_cell)
-
-# Debug edge cells
-# for l in range(0,(len(grid))):
-#     print(str(l) + " top edge " + str(grid[l].top_edge) + " right edge " + str(grid[l].right_edge) + " left edge " + str(grid[l].left_edge) + " bottom edge " + str(grid[l].bottom_edge) ) 
-
-# Debug wall knockdown
-# chooseWallKnock("north", grid[14])
-# chooseWallKnock("south", grid[14])
-# chooseWallKnock("west", grid[14])
-# chooseWallKnock("east", grid[14])
-
-# Debug grid cords
-# for i in range(0, len(grid)):
-#     print(grid[i].x, grid[i].y) 
-
-
 
 current_cell = 0
 backtracked = False
-
 
 def colorChecking():
     for vis in range(0,len(grid)):
@@ -184,16 +155,32 @@ while run_gen:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run_gen = False
+            run_solve = False
 
-    # print(visited_stack)
-    if run_alg:
-        current_cell = knockNeighbor(current_cell)
+    current_cell = knockNeighbor(current_cell)
+
     if not current_cell:
-        run_alg = False
+        break
 
-
-
+    if not solved:
+        if current_cell == GRID_SIZE * GRID_SIZE - 1:
+            solve = visited_stack.copy()
+            solved = True
+    
     colorChecking()
     redrawGameWin()
+    time.sleep(DELAY/2)
 
+while run_solve:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run_solve = False
+
+    for sol in range(0, len(solve)):
+        pygame.draw.rect(win, (0,255,0), (grid[solve[sol]].x + (THICC//2 + 1), grid[solve[sol]].y + (THICC//2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
+        pygame.display.update()
+        time.sleep(DELAY)
+    
+    # fill last square
+    pygame.draw.rect(win, (0,255,0), (grid[len(grid)-1].x + (THICC//2 + 1), grid[len(grid)-1].y + (THICC//2 + 1), SIZE - (THICC), SIZE - (THICC)), 0)
 pygame.quit
