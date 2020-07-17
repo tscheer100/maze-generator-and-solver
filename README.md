@@ -19,4 +19,5 @@ When ran, the program should look something like the following:
 
 ![mazegif](https://i.imgur.com/gD39pup.gif)
 
-The user has the ability to change the thickeness, the cell size, and the grid size.
+The user has the ability to change the thickeness, the cell size, the grid size, and now, the delay time.
+
