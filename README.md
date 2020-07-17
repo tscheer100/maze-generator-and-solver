@@ -1,7 +1,6 @@
 # maze-generator-and-solver
 An attempt to make a maze generator and a maze solver.
 
-**Curently as of July 12 2020, only the maze generator works. The solver will be added in the future.**
 
 ### Requirements: 
 - Python 3.x
@@ -19,5 +18,13 @@ When ran, the program should look something like the following:
 
 ![mazegif](https://i.imgur.com/gD39pup.gif)
 
+**As of July 16, 2020, the maze is now capable of "solving" itself**
+![solvegif](https://i.imgur.com/WKQBNuJ.gif)
+
 The user has the ability to change the thickeness, the cell size, the grid size, and now, the delay time.
 
+#### What I learned from this project:
+- got more familiar with classes
+- learned about the .copy method
+- learned the performance benefits of using sets over lists
+- what recusrive backtracking is and how it is used to generatee mazes
