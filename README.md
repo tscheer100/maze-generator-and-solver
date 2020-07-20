@@ -28,3 +28,5 @@ The user has the ability to change the thickeness, the cell size, the grid size,
 - learned about the .copy method
 - learned the performance benefits of using sets over lists
 - what recusrive backtracking is and how it is used to generatee mazes
+- learned of using enumerate instead of range
+- troubleshoot path variables
